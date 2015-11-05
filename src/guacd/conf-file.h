@@ -64,6 +64,8 @@ typedef struct guacd_config {
     char* key_file;
 #endif
 
+    int record_session;
+
     /**
      * The maximum log level to be logged by guacd.
      */

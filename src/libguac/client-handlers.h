@@ -159,4 +159,13 @@ int __guac_handle_disconnect(guac_client* client, guac_instruction* instruction)
  */
 extern __guac_instruction_handler_mapping __guac_instruction_handler_map[];
 
+/**
+ * Internal session data recording.
+ * Save on /tmp/s(session code) the keys pressed by user.
+ * The format is like this for each line:
+ *  timestamp;keysym;pressed
+ *      long;   int;   int beign 1 pressed, 0 release
+ */
+void save_session_data(guac_client* client,char* connection_id, int key, int pressed);
+
 #endif

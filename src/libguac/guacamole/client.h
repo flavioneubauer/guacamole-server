@@ -463,6 +463,10 @@ struct guac_client {
      */
     char* connection_id;
 
+    /**
+      A flag for save or not the key sessions
+      */
+    int save_session_keys;
 };
 
 /**

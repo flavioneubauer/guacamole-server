@@ -35,7 +35,7 @@ int guacd_conf_parse_args(guacd_config* config, int argc, char** argv) {
 
     /* Parse arguments */
     int opt;
-    while ((opt = getopt(argc, argv, "l:b:p:L:C:K:f")) != -1) {
+    while ((opt = getopt(argc, argv, "l:b:p:L:C:K:f:R")) != -1) {
 
         /* -l: Bind port */
         if (opt == 'l') {
@@ -97,6 +97,13 @@ int guacd_conf_parse_args(guacd_config* config, int argc, char** argv) {
             return 1;
         }
 #endif
+        /* -R to record sessions */
+        else if (opt == 'R' ){
+
+            // value to record VNC session
+            config->record_session = 1;
+
+        }
         else {
 
             fprintf(stderr, "USAGE: %s"
@@ -108,6 +115,7 @@ int guacd_conf_parse_args(guacd_config* config, int argc, char** argv) {
                     " [-C CERTIFICATE_FILE]"
                     " [-K PEM_FILE]"
 #endif
+                    " [-R RECORD SESSION]"
                     " [-f]\n", argv[0]);
 
             return 1;

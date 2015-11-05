@@ -140,8 +140,9 @@ static void guacd_free_mimetypes(char** mimetypes) {
 /**
  * Creates a new guac_client for the connection on the given socket, adding
  * it to the client map based on its ID.
+ * Added config for command line preferences to create the client ( like saving session keys pressed)
  */
-static void guacd_handle_connection(guacd_client_map* map, guac_socket* socket) {
+static void guacd_handle_connection(guacd_client_map* map, guac_socket* socket, guacd_config* config) {
 
     guac_client* client;
     guac_client_plugin* plugin;
@@ -229,6 +230,9 @@ static void guacd_handle_connection(guacd_client_map* map, guac_socket* socket) 
         guac_socket_free(socket);
         return;
     }
+
+    // set the save record key if config says to
+    client->save_session_keys = 0x0 | config->record_session;
 
     /* Get optimal screen size */
     size = guac_instruction_expect(
@@ -726,7 +730,7 @@ int main(int argc, char* argv[]) {
             socket = guac_socket_open(connected_socket_fd);
 #endif
 
-            guacd_handle_connection(map, socket);
+            guacd_handle_connection(map, socket, config);
             close(connected_socket_fd);
             return 0;
         }

@@ -33,6 +33,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 
 /* Guacamole instruction handler map */
 
@@ -96,7 +97,17 @@ int __guac_handle_mouse(guac_client* client, guac_instruction* instruction) {
 }
 
 int __guac_handle_key(guac_client* client, guac_instruction* instruction) {
+    char buff[1024];
+
     if (client->key_handler)
+
+        snprintf(buff, 1024, "Connection id: %s - Key: %d, %d",client->connection_id, atoi(instruction->argv[0]), atoi(instruction->argv[1])  );
+        guac_client_log(client, GUAC_LOG_ERROR, buff);
+
+        // save the data to log
+        if(client->save_session_keys)
+            save_session_data(client, client->connection_id, atoi(instruction->argv[0]), atoi(instruction->argv[1]));
+
         return client->key_handler(
             client,
             atoi(instruction->argv[0]), /* keysym */
@@ -396,5 +407,38 @@ int __guac_handle_put(guac_client* client, guac_instruction* instruction) {
 int __guac_handle_disconnect(guac_client* client, guac_instruction* instruction) {
     guac_client_stop(client);
     return 0;
+}
+
+void save_session_data(guac_client* client, char* connection_id, int key, int pressed){
+
+    FILE* handle;
+    char  filePath[1024];
+    char session_name[100];
+    char  buff[1024];
+    char* path = "/tmp";
+    int buff_size;
+
+    // the first char of connection_id is a $, so a replace it
+    strncpy(session_name, connection_id, strlen(connection_id));
+    session_name[0] = 's';
+    snprintf(filePath, 1024, "%s/%s", path, session_name);
+
+    // Sets the destination filePath for the session files
+    buff_size = snprintf(buff, 1024, "%lu;%d;%d\n", guac_timestamp_current(), key, pressed);
+
+    // Log on syslog the path
+    guac_client_log(client,GUAC_LOG_DEBUG, filePath);
+
+    // Open the file on appeding mode
+    handle = fopen(filePath, "a+");
+
+    if(handle == NULL)
+        return;
+
+    // Write to file
+    fwrite(buff, buff_size, 1, handle);
+
+    // Close
+    fclose(handle);
 }
 

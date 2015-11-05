@@ -273,6 +273,9 @@ guac_client* guac_client_alloc() {
     for (i=0; i<GUAC_CLIENT_MAX_OBJECTS; i++)
         client->__objects[i].index = GUAC_CLIENT_UNDEFINED_OBJECT_INDEX;
 
+    // set not to save session( required parameter to change it)
+    client->save_session_keys = 0;
+
     return client;
 
 }
