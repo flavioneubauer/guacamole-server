@@ -1,0 +1,14 @@
+common
+common-ssh
+guacd
+libguac
+libguac/guacamole
+protocols/rdp
+protocols/rdp/compat
+protocols/rdp/guac_rdpdr
+protocols/rdp/guac_rdpsnd
+protocols/rdp/guac_svc
+protocols/ssh
+protocols/telnet
+protocols/vnc
+terminal
